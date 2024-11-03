@@ -4,6 +4,7 @@ import com.descomplica.FrameBlog.exception.ResourceAlreadyExistsException;
 import com.descomplica.FrameBlog.models.User;
 import com.descomplica.FrameBlog.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.directory.InvalidAttributesException;
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // TODO: get user email by token and permit just for admin
     public List<User> getAllUsers() {
@@ -35,6 +39,9 @@ public class UserService {
             throw new ResourceAlreadyExistsException("User already exists");
         }
         try {
+            String passwordHash = passwordEncoder.encode(requestUser.getPassword());
+            requestUser.setPassword(passwordHash);
+
             var studentSaved = repository.save(requestUser);
             return "new user saved successfully : " + studentSaved.getId();
         } catch (IllegalArgumentException err) {
