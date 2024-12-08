@@ -4,6 +4,7 @@ import com.descomplica.FrameBlog.exception.ResourceAlreadyExistsException;
 import com.descomplica.FrameBlog.models.User;
 import com.descomplica.FrameBlog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Cacheable(value = "all")
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAll() {
         return ResponseEntity.ok().body(userService.getAllUsers());
